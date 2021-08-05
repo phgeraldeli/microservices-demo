@@ -21,6 +21,7 @@ kind: Deployment
 metadata:
   name: emailservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: emailservice
@@ -29,6 +30,18 @@ spec:
       labels:
         app: emailservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - emailservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
@@ -56,8 +69,8 @@ spec:
             cpu: 100m
             memory: 64Mi
           limits:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 100m
+            memory: 70Mi
 ---
 apiVersion: v1
 kind: Service
@@ -77,6 +90,7 @@ kind: Deployment
 metadata:
   name: checkoutservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: checkoutservice
@@ -85,6 +99,18 @@ spec:
       labels:
         app: checkoutservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - checkoutservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       containers:
         - name: server
@@ -122,11 +148,11 @@ spec:
           #   value: "jaeger-collector:14268"
           resources:
             requests:
-              cpu: 100m
+              cpu: 30m
               memory: 64Mi
             limits:
-              cpu: 200m
-              memory: 128Mi
+              cpu: 30m
+              memory: 70Mi
 ---
 apiVersion: v1
 kind: Service
@@ -146,6 +172,7 @@ kind: Deployment
 metadata:
   name: recommendationservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: recommendationservice
@@ -154,6 +181,18 @@ spec:
       labels:
         app: recommendationservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - recommendationservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
@@ -185,8 +224,8 @@ spec:
             cpu: 100m
             memory: 220Mi
           limits:
-            cpu: 200m
-            memory: 450Mi
+            cpu: 100m
+            memory: 240Mi
 ---
 apiVersion: v1
 kind: Service
@@ -206,6 +245,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: frontend
@@ -216,6 +256,18 @@ spec:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - frontend
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       containers:
         - name: server
@@ -267,11 +319,11 @@ spec:
           #   value: "jaeger-collector:14268"
           resources:
             requests:
-              cpu: 100m
+              cpu: 30m
               memory: 64Mi
             limits:
-              cpu: 200m
-              memory: 128Mi
+              cpu: 30m
+              memory: 64Mi
 ---
 apiVersion: v1
 kind: Service
@@ -304,6 +356,7 @@ kind: Deployment
 metadata:
   name: paymentservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: paymentservice
@@ -312,6 +365,18 @@ spec:
       labels:
         app: paymentservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - paymentservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
@@ -330,11 +395,11 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:50051"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 30m
             memory: 64Mi
           limits:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 30m
+            memory: 64Mi
 ---
 apiVersion: v1
 kind: Service
@@ -354,6 +419,7 @@ kind: Deployment
 metadata:
   name: productcatalogservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: productcatalogservice
@@ -362,6 +428,18 @@ spec:
       labels:
         app: productcatalogservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - productcatalogservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
@@ -388,11 +466,11 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:3550"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 30m
             memory: 64Mi
           limits:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 30m
+            memory: 64Mi
 ---
 apiVersion: v1
 kind: Service
@@ -412,6 +490,7 @@ kind: Deployment
 metadata:
   name: cartservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: cartservice
@@ -420,6 +499,18 @@ spec:
       labels:
         app: cartservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - cartservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
@@ -432,11 +523,11 @@ spec:
           value: "redis-cart:6379"
         resources:
           requests:
-            cpu: 200m
+            cpu: 60m
             memory: 64Mi
           limits:
-            cpu: 300m
-            memory: 128Mi
+            cpu: 60m
+            memory: 64Mi
         readinessProbe:
           initialDelaySeconds: 15
           exec:
@@ -465,10 +556,10 @@ kind: Deployment
 metadata:
   name: loadgenerator
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: loadgenerator
-  replicas: 1
   template:
     metadata:
       labels:
@@ -476,6 +567,18 @@ spec:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - loadgenerator
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       restartPolicy: Always
@@ -505,17 +608,18 @@ spec:
           value: "10"
         resources:
           requests:
-            cpu: 300m
+            cpu: 90m
             memory: 256Mi
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 90m
+            memory: 256Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: currencyservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: currencyservice
@@ -524,6 +628,18 @@ spec:
       labels:
         app: currencyservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - currencyservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
@@ -549,10 +665,10 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:7000"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 30m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 30m
             memory: 128Mi
 ---
 apiVersion: v1
@@ -573,6 +689,7 @@ kind: Deployment
 metadata:
   name: shippingservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: shippingservice
@@ -581,6 +698,18 @@ spec:
       labels:
         app: shippingservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - shippingservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       containers:
       - name: server
@@ -607,10 +736,10 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:50051"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 30m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 30m
             memory: 128Mi
 ---
 apiVersion: v1
@@ -631,6 +760,7 @@ kind: Deployment
 metadata:
   name: redis-cart
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: redis-cart
@@ -639,6 +769,18 @@ spec:
       labels:
         app: redis-cart
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - shippingservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       containers:
       - name: redis
         image: redis:alpine
@@ -658,9 +800,9 @@ spec:
         resources:
           limits:
             memory: 256Mi
-            cpu: 125m
+            cpu: 30m
           requests:
-            cpu: 70m
+            cpu: 30m
             memory: 200Mi
       volumes:
       - name: redis-data
@@ -684,6 +826,7 @@ kind: Deployment
 metadata:
   name: adservice
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: adservice
@@ -692,6 +835,18 @@ spec:
       labels:
         app: adservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - adservice
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+            weight: 100
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
       containers:
@@ -710,10 +865,10 @@ spec:
         #   value: "jaeger-collector:14268"
         resources:
           requests:
-            cpu: 200m
+            cpu: 100m
             memory: 180Mi
           limits:
-            cpu: 300m
+            cpu: 100m
             memory: 300Mi
         readinessProbe:
           initialDelaySeconds: 20
